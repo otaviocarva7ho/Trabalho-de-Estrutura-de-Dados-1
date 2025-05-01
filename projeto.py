@@ -57,6 +57,28 @@ def atenderVoo(fila):
             retirar(fila)
             print(f'Companhia "{companhia["nome"]}" não possui mais voos e foi removida da fila.')
 
+def removerCompanhia(fila, nomeCompanhia):
+    if vazia_fila(fila):
+        print("A fila está vazia")
+        return
+    
+    fila_temp = []
+
+    removida = False
+    while not vazia_fila(fila):
+        companhia = retirar(fila)
+        if companhia["nome"] != nomeCompanhia:
+            inserir(fila_temp, companhia)
+        else:
+            print(f'Companhia "{nomeCompanhia}" removida da fila')
+            removida = True
+
+    while not vazia_fila(fila_temp):
+        inserir(fila, retirar(fila_temp))
+
+    if not removida:
+        print(f'Companhia "{nomeCompanhia}" não encontrada na fila')
+
 fila_companhias = []
 inserirCompanhia(fila_companhias, "LATAM")
 inserirCompanhia(fila_companhias, "GOL")
@@ -68,3 +90,5 @@ adicionarVoo(fila_companhias, "GOL", "GOL456", "Salvador", "16:45")
 atenderVoo(fila_companhias)
 atenderVoo(fila_companhias)
 atenderVoo(fila_companhias)
+
+removerCompanhia(fila_companhias, "LATAM")
