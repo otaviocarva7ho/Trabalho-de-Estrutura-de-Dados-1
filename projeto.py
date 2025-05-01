@@ -37,6 +37,26 @@ def adicionarVoo(fila, nomeCompanhia, codigo, destino, horario):
             return
     print(f'Companhia "{nomeCompanhia}" não encontrada na fila.')
 
+def atenderVoo(fila):
+    if vazia_fila(fila):
+        print("Não há companhias na fila.")
+        return
+
+    companhia = fila[0]
+
+    if vazia(companhia["voos"]):
+        print(f'Companhia "{companhia["nome"]}" não possui voos para atender.')
+        retirar(fila)
+        print(f'Companhia "{companhia["nome"]}" removida da fila.')
+    else:
+        voo = pop(companhia["voos"])
+        print(f'Voo atendido da companhia "{companhia["nome"]}":')
+        print(f'Código: {voo["codigo"]}, Destino: {voo["destino"]}, Horário: {voo["horario"]}')
+        
+        if vazia(companhia["voos"]):
+            retirar(fila)
+            print(f'Companhia "{companhia["nome"]}" não possui mais voos e foi removida da fila.')
+
 fila_companhias = []
 inserirCompanhia(fila_companhias, "LATAM")
 inserirCompanhia(fila_companhias, "GOL")
@@ -44,3 +64,7 @@ inserirCompanhia(fila_companhias, "GOL")
 adicionarVoo(fila_companhias, "LATAM", "LAT123", "São Paulo", "14:00")
 adicionarVoo(fila_companhias, "LATAM", "LAT124", "Rio de Janeiro", "15:30")
 adicionarVoo(fila_companhias, "GOL", "GOL456", "Salvador", "16:45")
+
+atenderVoo(fila_companhias)
+atenderVoo(fila_companhias)
+atenderVoo(fila_companhias)
