@@ -114,6 +114,51 @@ def cancelarVoo(fila, nomeCompanhia, codigoVoo):
     if not encontrou:
         print(f'Voo {codigoVoo} não encontrado na companhia "{nomeCompanhia}".')
 
+def suspenderVoo(fila, nomeCompanhia, codigoVoo):
+    if vazia_fila(fila):
+        print("A fila está vazia.")
+        return
+
+    fila_temp = []
+    voo_suspenso = None
+    encontrou = False
+
+    while not vazia_fila(fila):
+        companhia = retirar(fila)
+
+        if companhia["nome"] == nomeCompanhia:
+            pilha_voos = companhia["voos"]
+            pilha_temp = []
+
+            while not vazia(pilha_voos):
+                voo = pop(pilha_voos)
+                if voo["codigo"] == codigoVoo and not encontrou:
+                    voo_suspenso = voo
+                    encontrou = True
+                else:
+                    push(pilha_temp, voo)
+
+            while not vazia(pilha_temp):
+                push(pilha_voos, pop(pilha_temp))
+
+            if encontrou:
+                pilha_aux = []
+                while not vazia(pilha_voos):
+                    push(pilha_aux, pop(pilha_voos))
+                push(pilha_voos, voo_suspenso)
+                while not vazia(pilha_aux):
+                    push(pilha_voos, pop(pilha_aux))
+
+                print(f'Voo {codigoVoo} suspenso (adiado) na companhia "{nomeCompanhia}".')
+
+        inserir(fila_temp, companhia)
+
+    while not vazia_fila(fila_temp):
+        inserir(fila, retirar(fila_temp))
+
+    if not encontrou:
+        print(f'Voo {codigoVoo} não encontrado na companhia "{nomeCompanhia}".')
+
 fila_companhias = []
 inserirCompanhia(fila_companhias, "LATAM")
 inserirCompanhia(fila_companhias, "GOL")
