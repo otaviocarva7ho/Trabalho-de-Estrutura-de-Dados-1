@@ -79,6 +79,41 @@ def removerCompanhia(fila, nomeCompanhia):
     if not removida:
         print(f'Companhia "{nomeCompanhia}" não encontrada na fila')
 
+def cancelarVoo(fila, nomeCompanhia, codigoVoo):
+    if vazia_fila(fila):
+        print("A fila está vazia.")
+        return
+
+    fila_temp = []
+    encontrou = False
+
+    while not vazia_fila(fila):
+        companhia = retirar(fila)
+
+        if companhia["nome"] == nomeCompanhia:
+            pilha_voos = companhia["voos"]
+            pilha_temp = []
+
+            while not vazia(pilha_voos):
+                voo = pop(pilha_voos)
+                if voo["codigo"] == codigoVoo:
+                    print(f'Voo {codigoVoo} cancelado da companhia "{nomeCompanhia}".')
+                    encontrou = True
+                    break
+                else:
+                    push(pilha_temp, voo)
+
+            while not vazia(pilha_temp):
+                push(pilha_voos, pop(pilha_temp))
+
+        inserir(fila_temp, companhia)
+
+    while not vazia_fila(fila_temp):
+        inserir(fila, retirar(fila_temp))
+
+    if not encontrou:
+        print(f'Voo {codigoVoo} não encontrado na companhia "{nomeCompanhia}".')
+
 fila_companhias = []
 inserirCompanhia(fila_companhias, "LATAM")
 inserirCompanhia(fila_companhias, "GOL")
@@ -92,3 +127,5 @@ atenderVoo(fila_companhias)
 atenderVoo(fila_companhias)
 
 removerCompanhia(fila_companhias, "LATAM")
+
+cancelarVoo(fila_companhias, "LATAM", "LAT124")
