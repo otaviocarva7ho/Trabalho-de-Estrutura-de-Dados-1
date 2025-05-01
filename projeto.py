@@ -159,6 +159,52 @@ def suspenderVoo(fila, nomeCompanhia, codigoVoo):
     if not encontrou:
         print(f'Voo {codigoVoo} não encontrado na companhia "{nomeCompanhia}".')
 
+def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
+    if vazia_fila(fila):
+        print("A fila está vazia.")
+        return
+
+    fila_temp = []
+    trocou = False
+
+    while not vazia_fila(fila):
+        companhia = retirar(fila)
+
+        if companhia["nome"] == nomeCompanhia:
+            pilha_voos = companhia["voos"]
+            pilha_temp = []
+            voos_lista = []
+
+            while not vazia(pilha_voos):
+                voos_lista.append(pop(pilha_voos))
+
+            voos_lista.reverse()
+
+            i1, i2 = -1, -1
+            for i, voo in enumerate(voos_lista):
+                if voo["codigo"] == codigoVoo1:
+                    i1 = i
+                elif voo["codigo"] == codigoVoo2:
+                    i2 = i
+
+            if i1 != -1 and i2 != -1:
+                voos_lista[i1], voos_lista[i2] = voos_lista[i2], voos_lista[i1]
+                trocou = True
+                print(f'Voos {codigoVoo1} e {codigoVoo2} trocados na companhia "{nomeCompanhia}".')
+            else:
+                print(f'Um ou ambos os voos não foram encontrados na companhia "{nomeCompanhia}".')
+
+            for voo in reversed(voos_lista):
+                push(pilha_voos, voo)
+
+        inserir(fila_temp, companhia)
+
+    while not vazia_fila(fila_temp):
+        inserir(fila, retirar(fila_temp))
+
+    if not trocou:
+        print(f'Não foi possível trocar os voos {codigoVoo1} e {codigoVoo2}.')
+
 fila_companhias = []
 inserirCompanhia(fila_companhias, "LATAM")
 inserirCompanhia(fila_companhias, "GOL")
@@ -174,3 +220,5 @@ atenderVoo(fila_companhias)
 removerCompanhia(fila_companhias, "LATAM")
 
 cancelarVoo(fila_companhias, "LATAM", "LAT124")
+
+trocarVoos(fila_companhias, "LATAM", "LAT123", "LAT124")
