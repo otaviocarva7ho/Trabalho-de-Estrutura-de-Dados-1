@@ -205,6 +205,35 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
     if not trocou:
         print(f'Não foi possível trocar os voos {codigoVoo1} e {codigoVoo2}.')
 
+def mostrarCompanhiaVoo(fila):
+    if vazia_fila(fila):
+        print("A fila está vazia")
+        return
+    
+    fila_temp = []
+
+    while not vazia_fila(fila):
+        companhia = retirar(fila)
+        print(f'\nCompanhia: {companhia["nome"]}')
+
+        pilha_voos = companhia["voos"]
+        pilha_temp = []
+
+        if vazia(pilha_voos):
+            print(" Nenhum voo cadastrado")
+        else:
+            print(" Voos (do topo para a base):")
+            while not vazia(pilha_voos):
+                voo = pop(pilha_voos)
+                print(f' Código: {voo["codigo"]}, Destino: {voo["destino"]}, Horário: {voo["horario"]}')
+                push(pilha_temp, voo)
+
+            while not vazia(pilha_temp):
+                push(pilha_voos, pop(pilha_temp))
+        inserir(fila_temp, companhia)
+    while not vazia_fila(fila_temp):
+        inserir(fila, retirar(fila_temp))
+
 fila_companhias = []
 inserirCompanhia(fila_companhias, "LATAM")
 inserirCompanhia(fila_companhias, "GOL")
@@ -222,3 +251,5 @@ removerCompanhia(fila_companhias, "LATAM")
 cancelarVoo(fila_companhias, "LATAM", "LAT124")
 
 trocarVoos(fila_companhias, "LATAM", "LAT123", "LAT124")
+
+mostrarCompanhiaVoo(fila_companhias)
