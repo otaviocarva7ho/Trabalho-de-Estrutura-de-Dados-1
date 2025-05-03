@@ -266,6 +266,38 @@ def buscarVoosDestino(fila, destino):
     if not encontrou:
         print(f'Nenhum voo encontrado para o destino "{destino}".')
 
+def mostrarEstatisticas(fila):
+    if vazia_fila(fila):
+        print("Não há companhias na fila.")
+        return
+
+    fila_temp = []
+    total_companhias = 0
+    total_voos = 0
+    companhia_mais_voos = None
+    max_voos = 0
+
+    while not vazia_fila(fila):
+        companhia = retirar(fila)
+        total_companhias += 1
+        num_voos = len(companhia["voos"])
+        total_voos += num_voos
+
+        if num_voos > max_voos:
+            max_voos = num_voos
+            companhia_mais_voos = companhia["nome"]
+
+        inserir(fila_temp, companhia)
+
+    while not vazia_fila(fila_temp):
+        inserir(fila, retirar(fila_temp))
+
+    print("\n=== Estatísticas do Aeroporto ===")
+    print(f"Total de companhias na fila: {total_companhias}")
+    print(f"Total de voos cadastrados: {total_voos}")
+    if companhia_mais_voos:
+        print(f"Companhia com maior número de voos: {companhia_mais_voos} ({max_voos} voos)")
+
 fila_companhias = []
 inserirCompanhia(fila_companhias, "LATAM")
 inserirCompanhia(fila_companhias, "GOL")
@@ -287,3 +319,5 @@ trocarVoos(fila_companhias, "LATAM", "LAT123", "LAT124")
 mostrarCompanhiaVoo(fila_companhias)
 
 buscarVoosDestino(fila_companhias, "São Paulo")
+
+mostrarEstatisticas(fila_companhias)
