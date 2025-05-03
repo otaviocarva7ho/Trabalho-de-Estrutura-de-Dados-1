@@ -16,6 +16,7 @@ def retirar(f):
 def vazia_fila(f):
     return False if f else True
 
+# Adiciona uma nova companhia aérea na fila
 def inserirCompanhia(fila, nomeCompanhia):
     companhia = {
         "nome": nomeCompanhia,
@@ -24,6 +25,7 @@ def inserirCompanhia(fila, nomeCompanhia):
     inserir(fila, companhia)
     print(f'Companhia "{nomeCompanhia}" adicionada à fila.')
 
+# Adiciona um voo à pilha de uma companhia específica
 def adicionarVoo(fila, nomeCompanhia, codigo, destino, horario):
     for companhia in fila:
         if companhia["nome"] == nomeCompanhia:
@@ -37,6 +39,7 @@ def adicionarVoo(fila, nomeCompanhia, codigo, destino, horario):
             return
     print(f'Companhia "{nomeCompanhia}" não encontrada na fila.')
 
+# Atende (remove) o voo do topo da pilha da primeira companhia da fila
 def atenderVoo(fila):
     if vazia_fila(fila):
         print("Não há companhias na fila.")
@@ -57,14 +60,16 @@ def atenderVoo(fila):
             retirar(fila)
             print(f'Companhia "{companhia["nome"]}" não possui mais voos e foi removida da fila.')
 
+# Remove uma companhia específica da fila
 def removerCompanhia(fila, nomeCompanhia):
     if vazia_fila(fila):
         print("A fila está vazia")
         return
     
     fila_temp = []
-
     removida = False
+
+    # Transfere companhias para fila temporária exceto a que será removida
     while not vazia_fila(fila):
         companhia = retirar(fila)
         if companhia["nome"] != nomeCompanhia:
@@ -73,12 +78,14 @@ def removerCompanhia(fila, nomeCompanhia):
             print(f'Companhia "{nomeCompanhia}" removida da fila')
             removida = True
 
+    # Restaura a fila original
     while not vazia_fila(fila_temp):
         inserir(fila, retirar(fila_temp))
 
     if not removida:
         print(f'Companhia "{nomeCompanhia}" não encontrada na fila')
 
+# Cancela um voo de uma companhia específica
 def cancelarVoo(fila, nomeCompanhia, codigoVoo):
     if vazia_fila(fila):
         print("A fila está vazia.")
@@ -94,6 +101,7 @@ def cancelarVoo(fila, nomeCompanhia, codigoVoo):
             pilha_voos = companhia["voos"]
             pilha_temp = []
 
+            # Procura o voo e remove
             while not vazia(pilha_voos):
                 voo = pop(pilha_voos)
                 if voo["codigo"] == codigoVoo:
@@ -103,6 +111,7 @@ def cancelarVoo(fila, nomeCompanhia, codigoVoo):
                 else:
                     push(pilha_temp, voo)
 
+            # Restaura os demais voos
             while not vazia(pilha_temp):
                 push(pilha_voos, pop(pilha_temp))
 
@@ -114,6 +123,7 @@ def cancelarVoo(fila, nomeCompanhia, codigoVoo):
     if not encontrou:
         print(f'Voo {codigoVoo} não encontrado na companhia "{nomeCompanhia}".')
 
+# Suspende (joga para o final) um voo de uma companhia
 def suspenderVoo(fila, nomeCompanhia, codigoVoo):
     if vazia_fila(fila):
         print("A fila está vazia.")
@@ -130,6 +140,7 @@ def suspenderVoo(fila, nomeCompanhia, codigoVoo):
             pilha_voos = companhia["voos"]
             pilha_temp = []
 
+            # Encontra o voo a ser suspenso
             while not vazia(pilha_voos):
                 voo = pop(pilha_voos)
                 if voo["codigo"] == codigoVoo and not encontrou:
@@ -138,9 +149,11 @@ def suspenderVoo(fila, nomeCompanhia, codigoVoo):
                 else:
                     push(pilha_temp, voo)
 
+            # Restaura a pilha
             while not vazia(pilha_temp):
                 push(pilha_voos, pop(pilha_temp))
 
+            # Coloca o voo suspenso no final da pilha
             if encontrou:
                 pilha_aux = []
                 while not vazia(pilha_voos):
@@ -159,6 +172,7 @@ def suspenderVoo(fila, nomeCompanhia, codigoVoo):
     if not encontrou:
         print(f'Voo {codigoVoo} não encontrado na companhia "{nomeCompanhia}".')
 
+# Troca a posição de dois voos de uma mesma companhia
 def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
     if vazia_fila(fila):
         print("A fila está vazia.")
@@ -172,14 +186,15 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
 
         if companhia["nome"] == nomeCompanhia:
             pilha_voos = companhia["voos"]
-            pilha_temp = []
             voos_lista = []
 
+            # Transfere os voos para uma lista
             while not vazia(pilha_voos):
                 voos_lista.append(pop(pilha_voos))
 
-            voos_lista.reverse()
+            voos_lista.reverse()  # Reverter ordem da pilha
 
+            # Encontra índices dos voos
             i1, i2 = -1, -1
             for i, voo in enumerate(voos_lista):
                 if voo["codigo"] == codigoVoo1:
@@ -187,6 +202,7 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
                 elif voo["codigo"] == codigoVoo2:
                     i2 = i
 
+            # Troca os voos se encontrados
             if i1 != -1 and i2 != -1:
                 voos_lista[i1], voos_lista[i2] = voos_lista[i2], voos_lista[i1]
                 trocou = True
@@ -194,6 +210,7 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
             else:
                 print(f'Um ou ambos os voos não foram encontrados na companhia "{nomeCompanhia}".')
 
+            # Restaura a pilha de voos
             for voo in reversed(voos_lista):
                 push(pilha_voos, voo)
 
@@ -205,6 +222,7 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
     if not trocou:
         print(f'Não foi possível trocar os voos {codigoVoo1} e {codigoVoo2}.')
 
+# Mostra todas as companhias e seus voos (do topo para a base)
 def mostrarCompanhiaVoo(fila):
     if vazia_fila(fila):
         print("A fila está vazia")
@@ -234,6 +252,7 @@ def mostrarCompanhiaVoo(fila):
     while not vazia_fila(fila_temp):
         inserir(fila, retirar(fila_temp))
 
+# Busca todos os voos de todas as companhias com destino específico
 def buscarVoosDestino(fila, destino):
     if vazia_fila(fila):
         print("A fila está vazia.")
@@ -266,6 +285,7 @@ def buscarVoosDestino(fila, destino):
     if not encontrou:
         print(f'Nenhum voo encontrado para o destino "{destino}".')
 
+# Mostra estatísticas gerais do sistema
 def mostrarEstatisticas(fila):
     if vazia_fila(fila):
         print("Não há companhias na fila.")
