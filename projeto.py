@@ -234,6 +234,38 @@ def mostrarCompanhiaVoo(fila):
     while not vazia_fila(fila_temp):
         inserir(fila, retirar(fila_temp))
 
+def buscarVoosDestino(fila, destino):
+    if vazia_fila(fila):
+        print("A fila está vazia.")
+        return
+
+    encontrou = False
+    fila_temp = []
+
+    while not vazia_fila(fila):
+        companhia = retirar(fila)
+        pilha_voos = companhia["voos"]
+        pilha_temp = []
+
+        while not vazia(pilha_voos):
+            voo = pop(pilha_voos)
+            if voo["destino"].lower() == destino.lower():
+                print(f'\nCompanhia: {companhia["nome"]}')
+                print(f'  Código: {voo["codigo"]}, Destino: {voo["destino"]}, Horário: {voo["horario"]}')
+                encontrou = True
+            push(pilha_temp, voo)
+
+        while not vazia(pilha_temp):
+            push(pilha_voos, pop(pilha_temp))
+
+        inserir(fila_temp, companhia)
+
+    while not vazia_fila(fila_temp):
+        inserir(fila, retirar(fila_temp))
+
+    if not encontrou:
+        print(f'Nenhum voo encontrado para o destino "{destino}".')
+
 fila_companhias = []
 inserirCompanhia(fila_companhias, "LATAM")
 inserirCompanhia(fila_companhias, "GOL")
@@ -253,3 +285,5 @@ cancelarVoo(fila_companhias, "LATAM", "LAT124")
 trocarVoos(fila_companhias, "LATAM", "LAT123", "LAT124")
 
 mostrarCompanhiaVoo(fila_companhias)
+
+buscarVoosDestino(fila_companhias, "São Paulo")
