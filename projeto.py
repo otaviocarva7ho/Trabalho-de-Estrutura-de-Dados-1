@@ -177,7 +177,7 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
     if vazia_fila(fila):
         print("A fila está vazia.")
         return
-
+    
     fila_temp = []
     trocou = False
 
@@ -186,33 +186,43 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
 
         if companhia["nome"] == nomeCompanhia:
             pilha_voos = companhia["voos"]
-            voos_lista = []
+            pilha_temp = []
+            voo1 = voo2 = None
 
-            # Transfere os voos para uma lista
+            # Transfere todos os voos para pilha_temp, procurando os dois voos
             while not vazia(pilha_voos):
-                voos_lista.append(pop(pilha_voos))
-
-            voos_lista.reverse()  # Reverter ordem da pilha
-
-            # Encontra índices dos voos
-            i1, i2 = -1, -1
-            for i, voo in enumerate(voos_lista):
+                voo = pop(pilha_voos)
                 if voo["codigo"] == codigoVoo1:
-                    i1 = i
+                    voo1 = voo
                 elif voo["codigo"] == codigoVoo2:
-                    i2 = i
+                    voo2 = voo
+                push(fila_temp, voo)
 
-            # Troca os voos se encontrados
-            if i1 != -1 and i2 != -1:
-                voos_lista[i1], voos_lista[i2] = voos_lista[i2], voos_lista[i1]
-                trocou = True
+            # Se os dois voos foram encontrados, trocamos
+            if voo1 and voo2:
+                pilha_reorganizada = []
+
+                while not vazia(pilha_temp):
+                    voo = pop(pilha_temp)
+                    if voo["codigo"] == codigoVoo1:
+                        push(pilha_reorganizada, voo2)
+                    elif voo["codigo"] == codigoVoo2:
+                        push(pilha_reorganizada, voo1)
+                    else:
+                        push(pilha_reorganizada, voo)
+
+                # Restaura a pilha original
+                while not vazia(pilha_reorganizada):
+                    push(pilha_voos, pop(pilha_reorganizada))
+
                 print(f'Voos {codigoVoo1} e {codigoVoo2} trocados na companhia "{nomeCompanhia}".')
+                trocou = True
             else:
-                print(f'Um ou ambos os voos não foram encontrados na companhia "{nomeCompanhia}".')
+                # se não encontrou ambos, restaura os voos como estavam
+                while not vazia(pilha_temp):
+                    push(pilha_voos, pop(pilha_temp))
 
-            # Restaura a pilha de voos
-            for voo in reversed(voos_lista):
-                push(pilha_voos, voo)
+                print(f'Um ou ambos os voos não foram encontrados na compahia "{nomeCompanhia}".')
 
         inserir(fila_temp, companhia)
 
@@ -220,7 +230,7 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
         inserir(fila, retirar(fila_temp))
 
     if not trocou:
-        print(f'Não foi possível trocar os voos {codigoVoo1} e {codigoVoo2}.')
+        print(f'Não foi possível trocar os voos {codigoVoo1} e {codigoVoo2}')
 
 # Mostra todas as companhias e seus voos (do topo para a base)
 def mostrarCompanhiaVoo(fila):
