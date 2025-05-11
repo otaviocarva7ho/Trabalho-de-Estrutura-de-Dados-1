@@ -196,7 +196,7 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
                     voo1 = voo
                 elif voo["codigo"] == codigoVoo2:
                     voo2 = voo
-                push(fila_temp, voo)
+                push(pilha_temp, voo)
 
             # Se os dois voos foram encontrados, trocamos
             if voo1 and voo2:
@@ -222,7 +222,7 @@ def trocarVoos(fila, nomeCompanhia, codigoVoo1, codigoVoo2):
                 while not vazia(pilha_temp):
                     push(pilha_voos, pop(pilha_temp))
 
-                print(f'Um ou ambos os voos não foram encontrados na compahia "{nomeCompanhia}".')
+                print(f'Um ou ambos os voos não foram encontrados na companhia "{nomeCompanhia}".')
 
         inserir(fila_temp, companhia)
 
@@ -310,7 +310,19 @@ def mostrarEstatisticas(fila):
     while not vazia_fila(fila):
         companhia = retirar(fila)
         total_companhias += 1
-        num_voos = len(companhia["voos"])
+
+        pilha_voos = companhia["voos"]
+        pilha_temp = []
+        num_voos = 0
+
+        while not vazia(pilha_voos):
+            voo = pop(pilha_voos)
+            push(pilha_temp, voo)
+            num_voos += 1
+
+        while not vazia(pilha_temp):
+            push(pilha_voos, pop(pilha_temp))
+
         total_voos += num_voos
 
         if num_voos > max_voos:
